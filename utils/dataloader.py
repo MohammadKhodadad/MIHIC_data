@@ -30,7 +30,7 @@ class ImageDataset(Dataset):
         class_names = ['alveoli', 'background', 'Immune cells','Necrosis','Other','Stroma','Tumor']
         label_dict = {class_name: index for index, class_name in enumerate(class_names)}
         files_ = data_loader_files()
-        self.files_ = files_[files_.split==split].iloc[:2]
+        self.files_ = files_[files_.split==split]
         if transform:
             self.images = [transform(Image.open(img_path).convert('RGB'))  for img_path in self.files_.addresses]
         else:
@@ -45,7 +45,17 @@ class ImageDataset(Dataset):
         print(image.shape,print(class_.shape))
         return {'image':image,"class":class_}
 
+def load_dataloaders(batch_size=32):
+    train_dataset = ImageDataset(split='train')
+    train_dataloader = DataLoader(train_dataset, batch_size=batch_size,shuffle=True)
 
+    val_dataset = ImageDataset(split='val')
+    val_dataloader = DataLoader(val_dataset, batch_size=batch_size)
+
+    test_dataset = ImageDataset(split='test')
+    test_dataloader = DataLoader(test_dataset, batch_size=batch_size)
+
+    return train_dataloader,val_dataloader,test_dataloader
 
 # dataset = ImageDataset(split='val', transform=transformations)
 # dataloader = DataLoader(dataset, batch_size=2)
