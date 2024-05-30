@@ -7,7 +7,8 @@ print("EVERYTHING IS IMPORTED SUCCESSFULLY.")
 
 train_dataloader,val_dataloader,test_dataloader=load_dataloaders(32)
 print("LOADERS READY.")
-model=load_vgg16(7)
+device='cuda'
+model=load_vgg16(7,device)
 print("MODEL READY.")
-model=run_training_classification(model, train_dataloader, val_dataloader, 10, 'cuda')
+model=run_training_classification(model, train_dataloader, val_dataloader, 10, device)
 print("FINISHED.")

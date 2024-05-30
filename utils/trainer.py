@@ -1,3 +1,4 @@
+import tqdm
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -8,7 +9,7 @@ def train_model_classification(model, train_loader, optimizer, criterion, device
     correct = 0
     total = 0
     
-    for data in train_loader:
+    for data in tqdm.tqdm(train_loader):
         inputs, labels = data['image'],data["class"]
         inputs, labels = inputs.to(device), labels.to(device)
         
@@ -36,7 +37,7 @@ def validate_model_classification(model, validation_loader, criterion, device):
     total = 0
     
     with torch.no_grad():  
-        for data in validation_loader:
+        for data in tqdm.tqdm(validation_loader):
             inputs, labels = data['image'],data["class"]
             inputs, labels = inputs.to(device), labels.to(device)
             
@@ -57,8 +58,8 @@ def run_training_classification(model, train_loader, validation_loader, epochs, 
     criterion = nn.CrossEntropyLoss()
     
     for epoch in range(epochs):
-        train_loss, train_acc = train_model(model, train_loader, optimizer, criterion, device)
-        val_loss, val_acc = validate_model(model, validation_loader, criterion, device)
+        train_loss, train_acc = train_model_classification(model, train_loader, optimizer, criterion, device)
+        val_loss, val_acc = validate_model_classification(model, validation_loader, criterion, device)
         
         print(f'Epoch {epoch+1}/{epochs}')
         print(f'Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.2f}%')

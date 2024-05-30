@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 from torchvision import models
 
-def load_vgg16(num_class):
+def load_vgg16(num_class,device='cpu'):
   current_dir = os.path.dirname(os.path.abspath(__file__))
   model_path=os.path.join(current_dir, '../weights/vgg16.pth')
   if os.path.exists(model_path):
@@ -17,4 +17,5 @@ def load_vgg16(num_class):
     torch.save(vgg16_model.state_dict(), model_path)
     print('model stored locally.')
   vgg16_model.classifier[-1]=nn.Linear(4096,num_class)
+  vgg16_model.to(device)
   return vgg16_model
