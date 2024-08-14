@@ -2,7 +2,7 @@ import sys
 sys.path.append('../')
 from utils.models import load_vgg16
 from utils.trainer import run_training_classification
-from utils.dataloader import load_dataloaders
+from utils.dataloader_old import load_dataloaders
 print("EVERYTHING IS IMPORTED SUCCESSFULLY.")
 
 train_dataloader,val_dataloader,test_dataloader=load_dataloaders(32)

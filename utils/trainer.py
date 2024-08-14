@@ -10,7 +10,7 @@ def train_model_classification(model, train_loader, optimizer, criterion, device
     total = 0
     
     for data in tqdm.tqdm(train_loader):
-        inputs, labels = data['image'],data["class"]
+        inputs, labels = data['inputs'],data["class"]
         inputs, labels = inputs.to(device), labels.to(device)
         
         optimizer.zero_grad()  
@@ -38,7 +38,7 @@ def validate_model_classification(model, validation_loader, criterion, device):
     
     with torch.no_grad():  
         for data in tqdm.tqdm(validation_loader):
-            inputs, labels = data['image'],data["class"]
+            inputs, labels = data['inputs'],data["class"]
             inputs, labels = inputs.to(device), labels.to(device)
             
             outputs = model(inputs)
@@ -64,5 +64,62 @@ def run_training_classification(model, train_loader, validation_loader, epochs, 
         print(f'Epoch {epoch+1}/{epochs}')
         print(f'Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.2f}%')
         print(f'Validation Loss: {val_loss:.4f}, Validation Acc: {val_acc:.2f}%')
+    
+    return model
+
+
+
+
+
+def train_model_mae(model, train_loader, optimizer, criterion, device):
+    model.train()
+    running_loss = 0.0
+    
+    for data in tqdm.tqdm(train_loader):
+        inputs = data['inputs']
+        # print(inputs)
+        inputs = {key:inputs[key].to(device) for key in inputs.keys()}
+        
+        optimizer.zero_grad()
+        outputs = model(**inputs)
+        loss = outputs.loss
+        loss.backward()
+        optimizer.step()
+        
+        running_loss += loss.item()
+    
+    epoch_loss = running_loss / len(train_loader)
+    return epoch_loss
+
+def validate_model_mae(model, validation_loader, criterion, device):
+    model.eval()
+    running_loss = 0.0
+    
+    with torch.no_grad():
+        for data in tqdm.tqdm(validation_loader):
+            inputs = data['inputs']
+            # print(inputs)
+            # print(inputs.keys())
+            inputs = {key:inputs[key].to(device) for key in inputs.keys()}
+            
+            outputs = model(**inputs)
+            loss = outputs.loss
+            
+            running_loss += loss.item()
+    
+    epoch_loss = running_loss / len(validation_loader)
+    return epoch_loss
+
+def run_training_mae(model, train_loader, validation_loader, epochs, device):
+    optimizer = optim.AdamW(model.parameters(), lr=1e-4)
+    criterion = None  # Typically, the model's loss function is used directly
+    
+    for epoch in range(epochs):
+        train_loss = train_model_mae(model, train_loader, optimizer, criterion, device)
+        val_loss = validate_model_mae(model, validation_loader, criterion, device)
+        
+        print(f'Epoch {epoch+1}/{epochs}')
+        print(f'Train Loss: {train_loss:.4f}')
+        print(f'Validation Loss: {val_loss:.4f}')
     
     return model
