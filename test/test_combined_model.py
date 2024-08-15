@@ -22,6 +22,7 @@ if os.path.exists(weights_path):
     print("WEIGHTS LOADED")
 else:
     print("WEIGHTS NOT LOADED")
+    raise Exception("Need Weights :(")
 model=combined_model(vitmae_model,vgg_model)
 model=run_training_combined(model, train_dataloader, test_dataloader, 10, device)
 print("FINISHED.")

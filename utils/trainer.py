@@ -112,11 +112,19 @@ def validate_model_mae(model, validation_loader, criterion, device):
     epoch_loss = running_loss / len(validation_loader)
     return epoch_loss
 
-def run_training_mae(model, train_loader, validation_loader, epochs, device):
+def run_training_mae(model, train_loader, validation_loader, epochs, device, transformer_epochs=2):
     optimizer = optim.AdamW(model.parameters(), lr=1e-4)
     criterion = None  # Typically, the model's loss function is used directly
     
     for epoch in range(epochs):
+        if epoch==0:
+            print("Epoch: 0, Let's freeze everything except for the cross-transformer")
+            model.unfreeze_transformer()
+            model.freeze_vgg()
+            model.freeze_vitmae()
+        if epoch==transformer_epochs:
+            print(f"Epoch: {transformer_epochs}, Let's unfreeze vgg16")
+            model.unfreeze_vgg()
         train_loss = train_model_mae(model, train_loader, optimizer, criterion, device)
         val_loss = validate_model_mae(model, validation_loader, criterion, device)
         

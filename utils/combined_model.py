@@ -28,6 +28,29 @@ class combined_model(nn.Module):
         out = self.vgg.classifier(out)
         return out
     
+    def freeze_vitmae(self):
+        for param in self.vitmae.parameters():
+            param.requires_grad = False
+
+    def unfreeze_vitmae(self):
+        for param in self.vitmae.parameters():
+            param.requires_grad = True
+
+    def freeze_vgg(self):
+        for param in self.vgg.parameters():
+            param.requires_grad = False
+
+    def unfreeze_vgg(self):
+        for param in self.vgg.parameters():
+            param.requires_grad = True
+
+    def freeze_transformer(self):
+        for param in self.transformer.parameters():
+            param.requires_grad = False
+
+    def unfreeze_transformer(self):
+        for param in self.transformer.parameters():
+            param.requires_grad = True
 
 if __name__ == "__main__":
     device = 'cuda'
