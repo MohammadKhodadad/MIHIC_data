@@ -10,5 +10,5 @@ print("LOADERS READY.")
 device='cuda'
 model=load_vitmae(7,device)
 print("MODEL READY.")
-model=run_training_mae(model, train_dataloader, val_dataloader, 10, device)
+model=run_training_mae(model, train_dataloader, test_dataloader, 10, device)
 print("FINISHED.")

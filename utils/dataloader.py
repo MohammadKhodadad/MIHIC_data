@@ -69,7 +69,10 @@ def collate_fn(batch):
     classes = torch.stack([item['class'] for item in batch])
     texts = [item['text'] for item in batch]
     inputs = image_processor(images=images, return_tensors="pt")
-    return {'inputs': inputs, "class": classes, 'text': texts}
+    inputs_vgg=torch.stack([transformations(image) for image in images])
+    # print(inputs['pixel_values'].shape,inputs_vgg.shape)
+
+    return {'inputs': inputs,'inputs_vgg':inputs_vgg, "class": classes, 'text': texts}
 
 
 def load_dataloaders(batch_size=32):
