@@ -44,7 +44,7 @@ class ImageDataset(Dataset):
         self.image_processor = AutoImageProcessor.from_pretrained("facebook/vit-mae-base")
         label_dict = {class_name: index for index, class_name in enumerate(self.class_names)}
         files_ = data_loader_files()
-        self.files_ = files_[files_.split==split]
+        self.files_ = files_[files_.split.apply(lambda x:x in split.split("_"))]
         self.images=[]
         print('loading data')
         with ThreadPoolExecutor(max_workers=None) as executor:
@@ -76,7 +76,7 @@ def collate_fn(batch):
 
 
 def load_dataloaders(batch_size=32):
-    train_dataset = ImageDataset(split='train')
+    train_dataset = ImageDataset(split='train_val')
     train_dataloader = DataLoader(train_dataset, batch_size=batch_size,shuffle=True,num_workers=0, collate_fn=collate_fn)
 
     val_dataset = ImageDataset(split='val')

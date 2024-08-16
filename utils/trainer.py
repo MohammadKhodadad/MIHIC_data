@@ -187,16 +187,17 @@ def validate_model_combined(model, validation_loader, criterion, device):
 
 
 
-def run_training_combined(model, train_loader, validation_loader, epochs, device,transformer_epochs=2):
+def run_training_combined(model, train_loader, validation_loader, epochs, device,transformer_epochs=5):
     optimizer = optim.AdamW(model.parameters(), lr=1e-4)
     criterion = nn.CrossEntropyLoss()
     
     for epoch in range(epochs):
         if epoch==0:
-            print("Epoch: 0, Let's freeze everything except for the cross-transformer")
+            print("Epoch: 0, Let's freeze everything except for the cross-transformer and classifier")
             model.unfreeze_transformer()
             model.freeze_vgg()
             model.freeze_vitmae()
+            model.unfreeze_vgg_head()
         if epoch==transformer_epochs:
             print(f"Epoch: {transformer_epochs}, Let's unfreeze vgg16")
             model.unfreeze_vgg()

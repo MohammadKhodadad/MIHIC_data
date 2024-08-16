@@ -1,5 +1,6 @@
 import os
 import sys
+import torch
 sys.path.append('../')
 sys.path.append('../utils')
 from utils.models import load_vitmae,load_vgg16
